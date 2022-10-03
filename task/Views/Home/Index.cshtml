@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width = device-width, initial-scale = 1.0">
+    <title>Task</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+
+            <div class="navbar-header">
+
+                @Html.ActionLink("Task Logs", "Index", "Home", new
+                   { area = "" }, new { @class = "navbar-brand" })
+            </div>
+
+        </div>
+
+    </div>
+    <div class="container body-content">
+        <ul class="list-group" id="log-list">
+            <li class="list-group-item">Loading Logs</li>
+        </ul>
+        <hr />
+        <footer>
+            <p>© @DateTime.Now.Year - Task</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script>
+
+        function loadLogs() {
+            $.ajax({
+                type: "GET",
+                url: "/api/File/logs",
+                data: "{}",
+                success: function (data) {
+                    var s = '';
+                    if (data.length == 0) {
+                        s = 'Sorry, No Logs Available';
+                    }
+                    else {
+                        for (var i = 0; i < data.length; i++) {
+                            s += '<li class="list-group-item">' + data[i] + '</li>';
+                        }
+                    }
+                    $("#log-list").html(s);
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            loadLogs(); //for first time
+            setInterval(loadLogs, 60000); //for every 1 min
+            
+        });  
+    </script>
+
+</body>
+</html>
